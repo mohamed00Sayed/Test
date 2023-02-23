@@ -1,0 +1,19 @@
+{
+    "name": "moham/test",
+    "description": "\"A PHP application with MySQL integration\"",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Moham\\Test\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "mohamed00Sayed",
+            "email": "sayedm22529@gmail.com"
+        }
+    ],
+    "require": {
+        "slim/psr7": "^1.6"
+    }
+}
