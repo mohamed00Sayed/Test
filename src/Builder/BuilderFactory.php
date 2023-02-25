@@ -4,16 +4,21 @@ declare(strict_types=1);
 
 namespace Moham\Test\Builder;
 
+use Moham\Test\Repository\RF;
+
 class BuilderFactory
 {
     private $BUILDERS;
+    public const BOOK = 'book';
+    public const DVD = 'dvd';
+    public const FURNITURE = 'furniture';
 
     public function __construct()
     {
         $this->BUILDERS = [
-            'book' => new BookBuilder(),
-            'dvd' => new DvdBuilder(),
-            'furniture' => new FurnitureBuilder()
+            BuilderFactory::BOOK => new BookBuilder(),
+            BuilderFactory::DVD => new DvdBuilder(),
+            BuilderFactory::FURNITURE => new FurnitureBuilder()
         ];
     }
 
