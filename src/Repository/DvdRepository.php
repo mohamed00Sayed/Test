@@ -11,6 +11,7 @@ class DvdRepository extends Repository
 {
     public function __construct()
     {
+        parent::__construct();
         $this->SAVE_PRODUCT_QUERY = 'INSERT INTO DVD(sku, name, price, size) VALUES(?, ?, ?, ?)';
         $this->DELETE_PRODUCT_QUERY = 'DELETE FROM DVD WHERE sku = ?';
         $this->SELECT_ALL_QUERY = 'SELECT * FROM DVD';

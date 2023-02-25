@@ -12,6 +12,7 @@ class FurnitureRepository extends Repository
 {
     public function __construct()
     {
+        parent::__construct();
         $this->SAVE_PRODUCT_QUERY = 'INSERT INTO FURNITURE(sku, name, price, dimensions) VALUES(?, ?, ?, ?)';
         $this->DELETE_PRODUCT_QUERY = 'DELETE FROM FURNITURE WHERE sku = ?';
         $this->SELECT_ALL_QUERY = 'SELECT * FROM FURNITURE';

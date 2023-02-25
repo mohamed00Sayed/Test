@@ -14,12 +14,22 @@ abstract class Repository
     protected $DELETE_PRODUCT_QUERY;
     protected $SELECT_ALL_QUERY;
     protected $RECORD_EXISTS_QUERY;
+    protected $DB_USERNAME;
+    protected $DB_PASSWORD;
+    protected $DB_URL;
+
+    public function __construct()
+    {
+        $this->DB_USERNAME = $_ENV['DB_USERNAME'];
+        $this->DB_PASSWORD = $_ENV['DB_PASSWORD'];
+        $this->DB_URL = $_ENV['DB_URL'];
+    }
 
     public function getAll(): mixed
     {
         $res = [];
         try {
-            $conn = new PDO(getenv("DB_URL"), getenv("DB_USERNAME"), getenv("DB_PASSWORD"));
+            $conn = new PDO($this->DB_URL, $this->DB_USERNAME, $this->DB_PASSWORD);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             $stmt = $conn->prepare($this->SELECT_ALL_QUERY);
@@ -39,7 +49,7 @@ abstract class Repository
     public function exists(string $id): mixed
     {
         try {
-            $conn = new PDO(getenv("DB_URL"), getenv("DB_USERNAME"), getenv("DB_PASSWORD"));
+            $conn = new PDO($this->DB_URL, $this->DB_USERNAME, $this->DB_PASSWORD);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             $stmt = $conn->prepare($this->RECORD_EXISTS_QUERY);
@@ -57,7 +67,7 @@ abstract class Repository
     public function save($product): mixed
     {
         try {
-            $conn = new PDO(getenv("DB_URL"), getenv("DB_USERNAME"), getenv("DB_PASSWORD"));
+            $conn = new PDO($this->DB_URL, $this->DB_USERNAME, $this->DB_PASSWORD);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             $stmt = $conn->prepare($this->SAVE_PRODUCT_QUERY);
@@ -78,7 +88,7 @@ abstract class Repository
     public function deleteAll(array $arr): mixed
     {
         try {
-            $conn = new PDO(getenv("DB_URL"), getenv("DB_USERNAME"), getenv("DB_PASSWORD"));
+            $conn = new PDO($this->DB_URL, $this->DB_USERNAME, $this->DB_PASSWORD);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             $stmt = $conn->prepare($this->DELETE_PRODUCT_QUERY);

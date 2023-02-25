@@ -12,6 +12,7 @@ class BookRepository extends Repository
 
     public function __construct()
     {
+        parent::__construct();
         $this->SAVE_PRODUCT_QUERY = 'INSERT INTO BOOK(sku, name, price, weight) VALUES(?, ?, ?, ?)';
         $this->DELETE_PRODUCT_QUERY = 'DELETE FROM BOOK WHERE sku = ?';
         $this->SELECT_ALL_QUERY = 'SELECT * FROM BOOK';
