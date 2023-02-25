@@ -30,7 +30,7 @@ class Furniture extends Product
             'sku' => $this->sku,
             'name' => $this->name,
             'price' => $this->price,
-            'dimesions' => $this->dimensions
+            'dimensions' => $this->dimensions
         ];
     }
 }
