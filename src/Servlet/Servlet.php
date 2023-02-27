@@ -2,9 +2,11 @@
 
 namespace Moham\Test\Servlet;
 
-interface Servlet
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+
+interface Servlet extends RequestHandlerInterface
 {
-    public function get($app_route, $callback);
-    public function post($app_route, $callback);
-    public function delete($app_route, $callback);
+    public function dispatch(ServerRequestInterface $request): ResponseInterface;
 }

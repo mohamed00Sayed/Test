@@ -1,51 +1,37 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Moham\Test\Servlet;
 
-use Slim\Psr7\Factory\ServerRequestFactory;
+use Nyholm\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class HttpServlet implements Servlet
 {
-    private $request;
-    private $handled;
-
-    public function __construct()
+    private array $handlers = [];
+    public function __construct(array $handlers)
     {
-        $this->request = ServerRequestFactory::createFromGlobals();
-        $this->handled = false;
+        $this->handlers = $handlers;
     }
 
-    public function get($route, $callback)
+    public function dispatch(ServerRequestInterface $request): ResponseInterface
     {
-        $this->handle($route, $callback, 'GET');
-    }
-
-    public function post($route, $callback)
-    {
-        $this->handle($route, $callback, 'POST');
-    }
-
-    public function delete($route, $callback)
-    {
-        $this->handle($route, $callback, 'DELETE');
-    }
-
-    private function handle($route, $callback, $method)
-    {
-        if ($this->handled == true) {
-            return;
+        $path = $request->getUri()->getPath();
+        $method = $request->getMethod();
+        foreach ($this->handlers as $handler) {
+            /*excute the correct handler based on the path and the method*/
+            if (strcasecmp($handler->getMethod(), $method) == 0 && strcasecmp($handler->getPath(), $path) == 0) {
+                return $handler->execute($request);
+            }
         }
+        /*if no handler is found, then it's a NOT FOUND case*/
+        return new Response(404);
+    }
 
-        if (strcasecmp($this->request->getMethod(), $method) !== 0) {
-            return;
-        }
-
-        $path = $this->request->getUri()->getPath();
-
-        if (strcmp($route, $path) == 0) {
-
-            $callback($this->request);
-            $this->handled = true;
-        }
+    public function handle($request): ResponseInterface
+    {
+        return $this->dispatch($request);
     }
 }
