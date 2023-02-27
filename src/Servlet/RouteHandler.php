@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace Moham\Test\Servlet;
 
-use Nyholm\Psr7\Factory\Psr17Factory;
-use Nyholm\Psr7\Response;
-use Psr\Http\Message\ResponseInterface;
-
 class RouteHandler
 {
     public const GET = "GET";
