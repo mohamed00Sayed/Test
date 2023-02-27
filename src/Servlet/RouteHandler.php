@@ -18,10 +18,10 @@ abstract class RouteHandler
     abstract public function getMethod(): string;
     abstract public function execute($request): ResponseInterface;
 
-    protected function createResponse(int $status, array $data): ResponseInterface
+    protected function createResponse(int $status, string $data): ResponseInterface
     {
         $psr17Factory = new Psr17Factory();
-        $responseBody = $psr17Factory->createStream(json_encode($data));
+        $responseBody = $psr17Factory->createStream($data);
         $response = $psr17Factory->createResponse($status)->withBody($responseBody);
         return $response;
     }
