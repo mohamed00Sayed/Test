@@ -30,8 +30,11 @@ class DvdRepository extends Repository
         return $result;
     }
 
-    protected function bindValue(int $pos, PDOStatement &$stmt, &$dvd): void
+    protected function bindValues(PDOStatement &$stmt, &$dvd): void
     {
-        $stmt->bindValue($pos, $dvd->getSize());
+        $stmt->bindValue(1, $dvd->getSku());
+        $stmt->bindValue(2, $dvd->getName());
+        $stmt->bindValue(3, $dvd->getPrice());
+        $stmt->bindValue(4, $dvd->getSize());
     }
 }

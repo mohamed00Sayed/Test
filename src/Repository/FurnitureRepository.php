@@ -37,8 +37,11 @@ class FurnitureRepository extends Repository
         return $result;
     }
 
-    protected function bindValue(int $pos, PDOStatement &$stmt, &$furniture): void
+    protected function bindValues(PDOStatement &$stmt, &$furniture): void
     {
-        $stmt->bindValue($pos, json_encode($furniture->getDimensions()));
+        $stmt->bindValue(1, $furniture->getSku());
+        $stmt->bindValue(2, $furniture->getName());
+        $stmt->bindValue(3, $furniture->getPrice());
+        $stmt->bindValue(4, json_encode($furniture->getSize()));
     }
 }

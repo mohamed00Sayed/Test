@@ -31,8 +31,11 @@ class BookRepository extends Repository
         return $result;
     }
 
-    protected function bindValue(int $pos, PDOStatement &$stmt, &$book): void
+    protected function bindValues(PDOStatement &$stmt, &$book): void
     {
-        $stmt->bindValue($pos, $book->getWeight());
+        $stmt->bindValue(1, $book->getSku());
+        $stmt->bindValue(2, $book->getName());
+        $stmt->bindValue(3, $book->getPrice());
+        $stmt->bindValue(4, $book->getWeight());
     }
 }

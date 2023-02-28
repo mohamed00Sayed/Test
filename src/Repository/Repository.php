@@ -71,10 +71,8 @@ abstract class Repository
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             $stmt = $conn->prepare($this->SAVE_PRODUCT_QUERY);
-            $stmt->bindValue(1, $product->getSku());
-            $stmt->bindValue(2, $product->getName());
-            $stmt->bindValue(3, $product->getPrice());
-            static::bindValue(4, $stmt, $product);
+            /*defer all bindings to subclasses*/
+            static::bindValues($stmt, $product);
 
             return $stmt->execute();
         } catch (PDOException $ex) {
@@ -109,5 +107,5 @@ abstract class Repository
     /*a template method, knows how to create the result of a specific product type*/
     protected abstract function createResult(array $arr): array;
     /*a template method, binds the different value, and could be used to bind more values if needed*/
-    protected abstract function bindValue(int $pos, PDOStatement &$stmt, &$product): void;
+    protected abstract function bindValues(PDOStatement &$stmt, &$product): void;
 }
