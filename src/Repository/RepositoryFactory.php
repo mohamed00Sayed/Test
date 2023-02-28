@@ -6,7 +6,7 @@ namespace Moham\Test\Repository;
 
 class RepositoryFactory
 {
-    private $REPOS;
+    protected $REPOS;
     public const BOOK = 'book';
     public const DVD = 'dvd';
     public const FURNITURE = 'furniture';
