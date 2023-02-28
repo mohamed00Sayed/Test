@@ -8,7 +8,7 @@ use Moham\Test\Repository\RF;
 
 class BuilderFactory
 {
-    private $BUILDERS;
+    protected $BUILDERS;
     public const BOOK = 'book';
     public const DVD = 'dvd';
     public const FURNITURE = 'furniture';
