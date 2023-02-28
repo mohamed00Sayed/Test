@@ -42,6 +42,6 @@ class FurnitureRepository extends Repository
         $stmt->bindValue(1, $furniture->getSku());
         $stmt->bindValue(2, $furniture->getName());
         $stmt->bindValue(3, $furniture->getPrice());
-        $stmt->bindValue(4, json_encode($furniture->getSize()));
+        $stmt->bindValue(4, json_encode($furniture->getDimensions()));
     }
 }
