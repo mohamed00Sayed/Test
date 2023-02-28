@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Moham\Test\Builder;
 
-class BuilderFactory
+class ProductBuilderFactory
 {
     protected $BUILDERS;
     public const BOOK = 'book';
@@ -14,9 +14,9 @@ class BuilderFactory
     public function __construct()
     {
         $this->BUILDERS = [
-            BuilderFactory::BOOK => new BookBuilder(),
-            BuilderFactory::DVD => new DvdBuilder(),
-            BuilderFactory::FURNITURE => new FurnitureBuilder()
+            ProductBuilderFactory::BOOK => new BookBuilder(),
+            ProductBuilderFactory::DVD => new DvdBuilder(),
+            ProductBuilderFactory::FURNITURE => new FurnitureBuilder()
         ];
     }
 
