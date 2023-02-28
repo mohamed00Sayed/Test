@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Moham\Test\Builder;
 
-use Moham\Test\Repository\RF;
-
 class BuilderFactory
 {
     protected $BUILDERS;
