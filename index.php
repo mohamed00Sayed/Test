@@ -2,14 +2,11 @@
 
 use Dotenv\Dotenv;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
-use Middlewares\Cors;
 use Moham\Test\Builder\ProductBuilderFactory;
 use Moham\Test\Repository\RepositoryFactory;
 use Moham\Test\Servlet\HttpServlet;
 use Moham\Test\Util\ParsersContainer;
 use Moham\Test\Util\ResponseFactory as UtilResponseFactory;
-use Neomerx\Cors\Analyzer;
-use Neomerx\Cors\Strategies\Settings;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7Server\ServerRequestCreator;
 use Psr\Http\Message\ResponseInterface;
@@ -22,13 +19,6 @@ require 'vendor/autoload.php';
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->safeLoad();
 
-/*CORS settings*/
-$settings = (new Settings())->init($_ENV["HOST_PROTOCOL"], $_ENV["HOST_IP"], $_ENV["HOST_PORT"]);
-$settings->setAllowedOrigins((array)$_ENV["ALLOWED_ORIGINS"]);
-$settings->setAllowedHeaders((array)$_ENV["ALLOWED_HEADERS"]);
-$settings->setAllowedMethods((array)$_ENV["ALLOWED_METHODS"]);
-$analyzer = Analyzer::instance($settings);
-$cors = new Cors($analyzer);
 /*Create request body parser*/
 $requestBodyParser =  new RequestBodyParser(new UtilResponseFactory(), new ParsersContainer);
 
@@ -40,11 +30,10 @@ $dispatcherServlet->get("/products/", function ($request) {
     $booksRepo = $repoFactory->getRepository(RepositoryFactory::BOOK);
     $dvdsRepo = $repoFactory->getRepository(RepositoryFactory::DVD);
     $furnituresRepo = $repoFactory->getRepository(RepositoryFactory::FURNITURE);
-    $resData = [
-        'books' => $booksRepo->getAll(),
-        'dvds' => $dvdsRepo->getAll(),
-        'furnitures' => $furnituresRepo->getAll()
-    ];
+    
+    $resData = array_merge([], $booksRepo->getAll());
+    $resData = array_merge($resData, $dvdsRepo->getAll());
+    $resData = array_merge($resData, $furnituresRepo->getAll());
     return createResponse(200, json_encode($resData));
 });
 
@@ -71,7 +60,7 @@ $dispatcherServlet->post("/products/", function ($request) {
     $code = 403;
     if (!$sku_in_books && !$sku_in_dvds && !$sku_in_furnitures) {
         $res = $saveRepo->save($product);
-        if($res){
+        if ($res) {
             $code = 200;
         }
     }
@@ -100,7 +89,6 @@ $dispatcherServlet->delete("/products/", function ($request) {
 /*Build Relay*/
 $builder = new RelayBuilder();
 $relay = $builder->newInstance([
-    $cors,
     $requestBodyParser,
     $dispatcherServlet
 ]);
@@ -134,7 +122,9 @@ function createResponse(int $status = 200, string $data): ResponseInterface
     $psr17Factory = new Psr17Factory();
     $responseBody = $psr17Factory->createStream($data);
     $response = $psr17Factory->createResponse($status)->withBody($responseBody);
-    return $response;
+    return $response->withHeader('Access-Control-Allow-Origin', $_ENV['ALLOWED_ORIGINS'])
+        ->withHeader('Access-Control-Allow-Headers', $_ENV['ALLOWED_HEADERS'])
+        ->withHeader('Access-Control-Allow-Methods', $_ENV['ALLOWED_METHODS']);
 }
 /*A function to convert an array to stdClass instance*/
 function convert(array $array): stdClass
