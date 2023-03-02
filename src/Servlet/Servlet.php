@@ -9,4 +9,5 @@ interface Servlet extends RequestHandlerInterface
     public function get(string $path, callable $callback);
     public function post(string $path, callable $callback);
     public function delete(string $path, callable $callback);
+    public function options(string $path, callable $callback);
 }

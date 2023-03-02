@@ -27,6 +27,11 @@ class HttpServlet implements Servlet
         array_push($this->handlers, new RouteHandler($path, RouteHandler::DELETE, $callback));
     }
 
+    public function options(string $path, callable $callback)
+    {
+        array_push($this->handlers, new RouteHandler($path, RouteHandler::OPTIONS, $callback));
+    }
+
     private function dispatch(ServerRequestInterface $request): ResponseInterface
     {
         $path = $request->getUri()->getPath();

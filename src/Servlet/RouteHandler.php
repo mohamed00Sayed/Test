@@ -9,6 +9,7 @@ class RouteHandler
     public const GET = "GET";
     public const POST = "POST";
     public const DELETE = "DELETE";
+    public const OPTIONS = "OPTIONS";
 
     private string $route;
     private string $method;

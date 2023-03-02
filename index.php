@@ -24,13 +24,17 @@ $requestBodyParser =  new RequestBodyParser(new UtilResponseFactory(), new Parse
 
 /*Configure dispatcher servlet & all request handlers*/
 $dispatcherServlet = new HttpServlet();
+/*Handle preflight request to make subsequent requests proceed*/
+$dispatcherServlet->options("/products/", function ($request) {
+    return createResponse(200, "");
+});
 
 $dispatcherServlet->get("/products/", function ($request) {
     $repoFactory = new RepositoryFactory();
     $booksRepo = $repoFactory->getRepository(RepositoryFactory::BOOK);
     $dvdsRepo = $repoFactory->getRepository(RepositoryFactory::DVD);
     $furnituresRepo = $repoFactory->getRepository(RepositoryFactory::FURNITURE);
-    
+
     $resData = array_merge([], $booksRepo->getAll());
     $resData = array_merge($resData, $dvdsRepo->getAll());
     $resData = array_merge($resData, $furnituresRepo->getAll());
