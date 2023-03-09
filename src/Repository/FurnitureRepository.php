@@ -28,8 +28,8 @@ class FurnitureRepository extends Repository
             $furniture = new Furniture(
                 $row['sku'],
                 $row['name'],
-                $row['price'],
-                new Dimension($dimensions->length, $dimensions->width, $dimensions->height)
+                (float)$row['price'],
+                new Dimension((int)$dimensions->length, (int)$dimensions->width, (int)$dimensions->height)
             );
             $result[$x++] = $furniture;
         }

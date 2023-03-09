@@ -23,7 +23,7 @@ class DvdRepository extends Repository
         $x = 0;
         $result = array();
         foreach ($arr as $row) {
-            $book = new Dvd($row['sku'], $row['name'], $row['price'], $row['size']);
+            $book = new Dvd($row['sku'], $row['name'], (float)$row['price'], (int)$row['size']);
             $result[$x++] = $book;
         }
 
