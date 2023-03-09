@@ -24,7 +24,7 @@ class BookRepository extends Repository
         $x = 0;
         $result = array();
         foreach ($arr as $row) {
-            $book = new Book($row['sku'], $row['name'], $row['price'], $row['weight']);
+            $book = new Book($row['sku'], $row['name'], (float)$row['price'], (float)$row['weight']);
             $result[$x++] = $book;
         }
 
