@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Moham\Test\Servlet;
 
-use Nyholm\Psr7\Response;
+use Moham\Test\Server\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

@@ -14,12 +14,10 @@
         }
     ],
     "require": {
-        "vlucas/phpdotenv": "^5.5",
-        "nyholm/psr7": "^1.5",
-        "nyholm/psr7-server": "^1.0",
-        "relay/relay": "^2.1",
-        "laminas/laminas-httphandlerrunner": "2.2.0",
-        "yiisoft/request-body-parser": "^1.1"
+        "psr/http-message": "^1.0",
+        "psr/http-server-handler": "^1.0",
+        "psr/http-server-middleware": "^1.0",
+        "vlucas/phpdotenv": "^5.5"
     },
     "config": {
         "platform": {

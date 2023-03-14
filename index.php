@@ -1,17 +1,16 @@
 <?php
 
 use Dotenv\Dotenv;
-use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
+use Moham\Test\Server\RequestStations;
 use Moham\Test\Builder\ProductBuilderFactory;
 use Moham\Test\Repository\RepositoryFactory;
+use Moham\Test\Server\RequestBodyJsonParser;
+use Moham\Test\Server\RequestCreator;
+use Moham\Test\Server\Response;
+use Moham\Test\Server\SapiEmitter;
+use Moham\Test\Server\Stream;
 use Moham\Test\Servlet\HttpServlet;
-use Moham\Test\Util\ParsersContainer;
-use Moham\Test\Util\ResponseFactory as UtilResponseFactory;
-use Nyholm\Psr7\Factory\Psr17Factory;
-use Nyholm\Psr7Server\ServerRequestCreator;
 use Psr\Http\Message\ResponseInterface;
-use Relay\RelayBuilder;
-use Yiisoft\Request\Body\RequestBodyParser;
 
 require 'vendor/autoload.php';
 
@@ -19,14 +18,11 @@ require 'vendor/autoload.php';
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->safeLoad();
 
-/*Create request body parser*/
-$requestBodyParser =  new RequestBodyParser(new UtilResponseFactory(), new ParsersContainer);
-
 /*Configure dispatcher servlet & all request handlers*/
 $dispatcherServlet = new HttpServlet();
 /*Handle preflight request to make subsequent requests proceed*/
 $dispatcherServlet->options("/products/", function ($request) {
-    return createResponse(200, "");
+    return createResponse(200, "OK");
 });
 
 $dispatcherServlet->get("/products/", function ($request) {
@@ -90,42 +86,29 @@ $dispatcherServlet->delete("/products/", function ($request) {
     return createResponse(200, "OK");
 });
 
-/*Build Relay*/
-$builder = new RelayBuilder();
-$relay = $builder->newInstance([
-    $requestBodyParser,
+/*Configure the stations the request will pass through*/
+$stations = new RequestStations([
+    new RequestBodyJsonParser(),
     $dispatcherServlet
 ]);
 
 /*Create request from globals*/
-$request = createRequest();
+$request = (new RequestCreator())->fromGlobals();
 
 /*Forward to all middlewares and handlers*/
-$response = $relay->handle($request);
+$response = $stations->handle($request);
 
 /*Emit response*/
-(new SapiEmitter())->emit($response);
+(new SapiEmitter)->emit($response);
 /*****************************************************************************
  ****************************************************************************/
 /*Utility Methods*/
-/*A function to create request from globals*/
-function createRequest()
-{
-    $psr17Factory = new Psr17Factory();
-    $request = (new ServerRequestCreator(
-        $psr17Factory,
-        $psr17Factory,
-        $psr17Factory,
-        $psr17Factory
-    ))->fromGlobals();
-    return $request;
-}
+
 /*A function to create response*/
 function createResponse(int $status = 200, string $data): ResponseInterface
 {
-    $psr17Factory = new Psr17Factory();
-    $responseBody = $psr17Factory->createStream($data);
-    $response = $psr17Factory->createResponse($status)->withBody($responseBody);
+    $responseBody = Stream::create($data);
+    $response = (new Response($status))->withBody($responseBody);
     return $response->withHeader('Access-Control-Allow-Origin', $_ENV['ALLOWED_ORIGINS'])
         ->withHeader('Access-Control-Allow-Headers', $_ENV['ALLOWED_HEADERS'])
         ->withHeader('Access-Control-Allow-Methods', $_ENV['ALLOWED_METHODS']);
