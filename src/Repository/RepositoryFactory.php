@@ -6,22 +6,25 @@ namespace Moham\Test\Repository;
 
 class RepositoryFactory
 {
-    protected $REPOS;
-    public const BOOK = 'book';
-    public const DVD = 'dvd';
-    public const FURNITURE = 'furniture';
+    private $repos;
 
-    public function __construct()
+    public function __construct($repos)
     {
-        $this->REPOS = [
-            RepositoryFactory::BOOK => new BookRepository(),
-            RepositoryFactory::DVD => new DvdRepository(),
-            RepositoryFactory::FURNITURE => new FurnitureRepository()
-        ];
+        if (!is_array($repos)) {
+            throw new \RuntimeException('$repos must be an associative array');
+        }
+
+        foreach ($repos as $key => $class) {
+            if (!is_subclass_of($class, Repository::class)) {
+                throw new \RuntimeException("RepositoryFactory is only for Repository subclasses");
+            }
+        }
+
+        $this->repos = $repos;
     }
 
     public  function getRepository(string $type): Repository
     {
-        return $this->REPOS[$type];
+        return new $this->repos[$type];
     }
 }

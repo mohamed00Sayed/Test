@@ -1,8 +1,14 @@
 <?php
 
 use Dotenv\Dotenv;
+use Moham\Test\Builder\BookBuilder;
+use Moham\Test\Builder\DvdBuilder;
+use Moham\Test\Builder\FurnitureBuilder;
 use Moham\Test\Server\RequestStations;
 use Moham\Test\Builder\ProductBuilderFactory;
+use Moham\Test\Repository\BookRepository;
+use Moham\Test\Repository\DvdRepository;
+use Moham\Test\Repository\FurnitureRepository;
 use Moham\Test\Repository\RepositoryFactory;
 use Moham\Test\Server\RequestBodyJsonParser;
 use Moham\Test\Server\RequestCreator;
@@ -17,6 +23,22 @@ require 'vendor/autoload.php';
 /*Read environment variables from .env file*/
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->safeLoad();
+/*Define some constants*/
+define('BOOK', 'book');
+define('DVD', 'dvd');
+define('FURNITURE', 'furniture');
+
+define('REPO_FACTORY', new RepositoryFactory([
+    BOOK => BookRepository::class,
+    DVD => DvdRepository::class,
+    FURNITURE => FurnitureRepository::class
+]));
+
+define('PRODUCT_BUILDER_FACTORY', new ProductBuilderFactory([
+    BOOK => BookBuilder::class,
+    DVD => DvdBuilder::class,
+    FURNITURE => FurnitureBuilder::class
+]));
 
 /*Configure dispatcher servlet & all request handlers*/
 $dispatcherServlet = new HttpServlet();
@@ -26,10 +48,9 @@ $dispatcherServlet->options("/products/", function ($request) {
 });
 
 $dispatcherServlet->get("/products/", function ($request) {
-    $repoFactory = new RepositoryFactory();
-    $booksRepo = $repoFactory->getRepository(RepositoryFactory::BOOK);
-    $dvdsRepo = $repoFactory->getRepository(RepositoryFactory::DVD);
-    $furnituresRepo = $repoFactory->getRepository(RepositoryFactory::FURNITURE);
+    $booksRepo = REPO_FACTORY->getRepository(BOOK);
+    $dvdsRepo = REPO_FACTORY->getRepository(DVD);
+    $furnituresRepo = REPO_FACTORY->getRepository(FURNITURE);
 
     $resData = array_merge([], $booksRepo->getAll());
     $resData = array_merge($resData, $dvdsRepo->getAll());
@@ -38,18 +59,15 @@ $dispatcherServlet->get("/products/", function ($request) {
 });
 
 $dispatcherServlet->post("/products/", function ($request) {
-    $builderFactory = new ProductBuilderFactory();
-    $repoFactory = new RepositoryFactory();
-
     $parsedBody = convert($request->getParsedBody());
 
-    $booksRepo = $repoFactory->getRepository(RepositoryFactory::BOOK);
-    $dvdsRepo = $repoFactory->getRepository(RepositoryFactory::DVD);
-    $furnituresRepo = $repoFactory->getRepository(RepositoryFactory::FURNITURE);
+    $booksRepo = REPO_FACTORY->getRepository(BOOK);
+    $dvdsRepo = REPO_FACTORY->getRepository(DVD);
+    $furnituresRepo = REPO_FACTORY->getRepository(FURNITURE);
 
-    $saveRepo = $repoFactory->getRepository($parsedBody->type);
+    $saveRepo = REPO_FACTORY->getRepository($parsedBody->type);
 
-    $builder = $builderFactory->getBuilder($parsedBody->type);
+    $builder = PRODUCT_BUILDER_FACTORY->getBuilder($parsedBody->type);
     $product = $builder->getProductInstance($parsedBody->data);
     /*check existence of the product in all tables*/
     $sku_in_books = $booksRepo->exists($product->getSku());
@@ -68,10 +86,9 @@ $dispatcherServlet->post("/products/", function ($request) {
 });
 
 $dispatcherServlet->delete("/products/", function ($request) {
-    $repoFactory = new RepositoryFactory();
-    $booksRepo = $repoFactory->getRepository(RepositoryFactory::BOOK);
-    $dvdsRepo = $repoFactory->getRepository(RepositoryFactory::DVD);
-    $furnituresRepo = $repoFactory->getRepository(RepositoryFactory::FURNITURE);
+    $booksRepo = REPO_FACTORY->getRepository(BOOK);
+    $dvdsRepo = REPO_FACTORY->getRepository(DVD);
+    $furnituresRepo = REPO_FACTORY->getRepository(FURNITURE);
 
     $parsedBody = $request->getParsedBody();
 
@@ -99,7 +116,7 @@ $request = (new RequestCreator())->fromGlobals();
 $response = $stations->handle($request);
 
 /*Emit response*/
-(new SapiEmitter)->emit($response);
+(new SapiEmitter())->emit($response);
 /*****************************************************************************
  ****************************************************************************/
 /*Utility Methods*/

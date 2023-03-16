@@ -6,22 +6,25 @@ namespace Moham\Test\Builder;
 
 class ProductBuilderFactory
 {
-    protected $BUILDERS;
-    public const BOOK = 'book';
-    public const DVD = 'dvd';
-    public const FURNITURE = 'furniture';
+    private $builders;
 
-    public function __construct()
+    public function __construct($builders)
     {
-        $this->BUILDERS = [
-            ProductBuilderFactory::BOOK => new BookBuilder(),
-            ProductBuilderFactory::DVD => new DvdBuilder(),
-            ProductBuilderFactory::FURNITURE => new FurnitureBuilder()
-        ];
+        if (!is_array($builders)) {
+            throw new \RuntimeException('$builders must be an associative array');
+        }
+
+        foreach ($builders as $key => $class) {
+            if (!is_subclass_of($class, ProductBuilder::class)) {
+                throw new \RuntimeException("ProductBuilderFactory is only for ProductBuilder subclasses");
+            }
+        }
+
+        $this->builders = $builders;
     }
 
     public  function getBuilder(string $type): ProductBuilder
     {
-        return $this->BUILDERS[$type];
+        return new $this->builders[$type];
     }
 }
