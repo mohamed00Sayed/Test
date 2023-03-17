@@ -9,7 +9,6 @@ use Moham\Test\Main\Book;
 
 class BookRepository extends Repository
 {
-
     public function __construct()
     {
         parent::__construct();

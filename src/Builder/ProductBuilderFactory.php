@@ -23,8 +23,8 @@ class ProductBuilderFactory
         $this->builders = $builders;
     }
 
-    public  function getBuilder(string $type): ProductBuilder
+    public function getBuilder(string $type): ProductBuilder
     {
-        return new $this->builders[$type];
+        return new $this->builders[$type]();
     }
 }

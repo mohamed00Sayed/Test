@@ -1,44 +1,18 @@
 <?php
 
 use Dotenv\Dotenv;
-use Moham\Test\Builder\BookBuilder;
-use Moham\Test\Builder\DvdBuilder;
-use Moham\Test\Builder\FurnitureBuilder;
 use Moham\Test\Server\RequestStations;
-use Moham\Test\Builder\ProductBuilderFactory;
-use Moham\Test\Repository\BookRepository;
-use Moham\Test\Repository\DvdRepository;
-use Moham\Test\Repository\FurnitureRepository;
-use Moham\Test\Repository\RepositoryFactory;
 use Moham\Test\Server\RequestBodyJsonParser;
 use Moham\Test\Server\RequestCreator;
-use Moham\Test\Server\Response;
 use Moham\Test\Server\SapiEmitter;
-use Moham\Test\Server\Stream;
 use Moham\Test\Servlet\HttpServlet;
-use Psr\Http\Message\ResponseInterface;
 
 require 'vendor/autoload.php';
+require 'utils.php';
 
 /*Read environment variables from .env file*/
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->safeLoad();
-/*Define some constants*/
-define('BOOK', 'book');
-define('DVD', 'dvd');
-define('FURNITURE', 'furniture');
-
-define('REPO_FACTORY', new RepositoryFactory([
-    BOOK => BookRepository::class,
-    DVD => DvdRepository::class,
-    FURNITURE => FurnitureRepository::class
-]));
-
-define('PRODUCT_BUILDER_FACTORY', new ProductBuilderFactory([
-    BOOK => BookBuilder::class,
-    DVD => DvdBuilder::class,
-    FURNITURE => FurnitureBuilder::class
-]));
 
 /*Configure dispatcher servlet & all request handlers*/
 $dispatcherServlet = new HttpServlet();
@@ -117,28 +91,3 @@ $response = $stations->handle($request);
 
 /*Emit response*/
 (new SapiEmitter())->emit($response);
-/*****************************************************************************
- ****************************************************************************/
-/*Utility Methods*/
-
-/*A function to create response*/
-function createResponse(int $status = 200, string $data): ResponseInterface
-{
-    $responseBody = Stream::create($data);
-    $response = (new Response($status))->withBody($responseBody);
-    return $response->withHeader('Access-Control-Allow-Origin', $_ENV['ALLOWED_ORIGINS'])
-        ->withHeader('Access-Control-Allow-Headers', $_ENV['ALLOWED_HEADERS'])
-        ->withHeader('Access-Control-Allow-Methods', $_ENV['ALLOWED_METHODS']);
-}
-/*A function to convert an array to stdClass instance*/
-function convert(array $array): stdClass
-{
-    $instance = new stdClass();
-    foreach ($array as $k => $v) {
-        if (is_array($v)) {
-            $v = convert($v);
-        }
-        $instance->$k = $v;
-    }
-    return $instance;
-}

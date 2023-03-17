@@ -105,7 +105,7 @@ abstract class Repository
         return true;
     }
     /*a template method, knows how to create the result of a specific product type*/
-    protected abstract function createResult(array $arr): array;
+    abstract protected function createResult(array $arr): array;
     /*a template method, binds the different value, and could be used to bind more values if needed*/
-    protected abstract function bindValues(PDOStatement &$stmt, &$product): void;
+    abstract protected function bindValues(PDOStatement &$stmt, &$product): void;
 }

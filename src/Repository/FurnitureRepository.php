@@ -16,7 +16,8 @@ class FurnitureRepository extends Repository
         $this->SAVE_PRODUCT_QUERY = 'INSERT INTO FURNITURE(sku, name, price, dimensions) VALUES(?, ?, ?, ?)';
         $this->DELETE_PRODUCT_QUERY = 'DELETE FROM FURNITURE WHERE sku = ?';
         $this->SELECT_ALL_QUERY = 'SELECT * FROM FURNITURE';
-        $this->RECORD_EXISTS_QUERY = 'SELECT CASE WHEN EXISTS (SELECT 1 FROM FURNITURE WHERE sku = ?) THEN 1 ELSE 0 END';
+        $this->RECORD_EXISTS_QUERY =
+            'SELECT CASE WHEN EXISTS (SELECT 1 FROM FURNITURE WHERE sku = ?) THEN 1 ELSE 0 END';
     }
 
     protected function createResult(array $arr): array

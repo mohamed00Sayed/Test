@@ -171,7 +171,10 @@ trait MessageTrait
 
         if (!\is_array($values)) {
             // This is simple, just one value.
-            if ((!\is_numeric($values) && !\is_string($values)) || 1 !== \preg_match("@^[ \t\x21-\x7E\x80-\xFF]*$@", (string) $values)) {
+            if (
+                (!\is_numeric($values) && !\is_string($values))
+                || 1 !== \preg_match("@^[ \t\x21-\x7E\x80-\xFF]*$@", (string) $values)
+            ) {
                 throw new \InvalidArgumentException('Header values must be RFC 7230 compatible strings.');
             }
 
@@ -179,13 +182,17 @@ trait MessageTrait
         }
 
         if (empty($values)) {
-            throw new \InvalidArgumentException('Header values must be a string or an array of strings, empty array given.');
+            throw new \InvalidArgumentException(
+                'Header values must be a string or an array of strings, empty array given.'
+            );
         }
 
         // Assert Non empty array
         $returnValues = [];
         foreach ($values as $v) {
-            if ((!\is_numeric($v) && !\is_string($v)) || 1 !== \preg_match("@^[ \t\x21-\x7E\x80-\xFF]*$@", (string) $v)) {
+            if (
+                (!\is_numeric($v) && !\is_string($v)) || 1 !== \preg_match("@^[ \t\x21-\x7E\x80-\xFF]*$@", (string) $v)
+            ) {
                 throw new \InvalidArgumentException('Header values must be RFC 7230 compatible strings.');
             }
 

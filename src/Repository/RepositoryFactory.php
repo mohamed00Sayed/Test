@@ -23,8 +23,8 @@ class RepositoryFactory
         $this->repos = $repos;
     }
 
-    public  function getRepository(string $type): Repository
+    public function getRepository(string $type): Repository
     {
-        return new $this->repos[$type];
+        return new $this->repos[$type]();
     }
 }

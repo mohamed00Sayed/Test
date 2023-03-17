@@ -22,7 +22,7 @@ class HttpServlet implements Servlet
         array_push($this->handlers, new RouteHandler($path, RouteHandler::POST, $callback));
     }
 
-    public function delete(string $path,  callable $callback)
+    public function delete(string $path, callable $callback)
     {
         array_push($this->handlers, new RouteHandler($path, RouteHandler::DELETE, $callback));
     }

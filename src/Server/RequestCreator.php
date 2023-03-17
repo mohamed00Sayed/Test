@@ -30,10 +30,12 @@ final class RequestCreator
                 if (true === \is_int($headerName) || 'content-type' !== \strtolower($headerName)) {
                     continue;
                 }
-                if (\in_array(
-                    \strtolower(\trim(\explode(';', $headerValue, 2)[0])),
-                    ['application/x-www-form-urlencoded', 'multipart/form-data']
-                )) {
+                if (
+                    \in_array(
+                        \strtolower(\trim(\explode(';', $headerValue, 2)[0])),
+                        ['application/x-www-form-urlencoded', 'multipart/form-data']
+                    )
+                ) {
                     $post = $_POST;
 
                     break;
@@ -41,11 +43,26 @@ final class RequestCreator
             }
         }
 
-        return $this->fromArrays($server, $headers, $_COOKIE, $_GET, $post, $_FILES, \fopen('php://input', 'r') ?: null);
+        return $this->fromArrays(
+            $server,
+            $headers,
+            $_COOKIE,
+            $_GET,
+            $post,
+            $_FILES,
+            \fopen('php://input', 'r') ?: null
+        );
     }
 
-    public function fromArrays(array $server, array $headers = [], array $cookie = [], array $get = [], ?array $post = null, array $files = [], $body = null): ServerRequestInterface
-    {
+    public function fromArrays(
+        array $server,
+        array $headers = [],
+        array $cookie = [],
+        array $get = [],
+        ?array $post = null,
+        array $files = [],
+        $body = null
+    ): ServerRequestInterface {
         $method = $this->getMethodFromEnv($server);
         $uri = $this->getUriFromEnvWithHTTP($server);
         $protocol = isset($server['SERVER_PROTOCOL']) ? \str_replace('HTTP/', '', $server['SERVER_PROTOCOL']) : '1.1';
@@ -75,7 +92,9 @@ final class RequestCreator
         } elseif (\is_string($body)) {
             $body = $this->createStream($body);
         } elseif (!$body instanceof StreamInterface) {
-            throw new \InvalidArgumentException('The $body parameter to ServerRequestCreator::fromArrays must be string, resource or StreamInterface');
+            throw new \InvalidArgumentException(
+                'The $body parameter to ServerRequestCreator::fromArrays must be string, resource or StreamInterface'
+            );
         }
 
         return $serverRequest->withBody($body);

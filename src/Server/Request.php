@@ -35,8 +35,14 @@ class Request implements ServerRequestInterface
 
     private $uploadedFiles = [];
 
-    public function __construct(string $method, $uri, array $headers = [], $body = null, string $version = '1.1', array $serverParams = [])
-    {
+    public function __construct(
+        string $method,
+        $uri,
+        array $headers = [],
+        $body = null,
+        string $version = '1.1',
+        array $serverParams = []
+    ) {
         $this->serverParams = $serverParams;
 
         if (!($uri instanceof UriInterface)) {

@@ -11,7 +11,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class RequestBodyJsonParser implements MiddlewareInterface
 {
-
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {

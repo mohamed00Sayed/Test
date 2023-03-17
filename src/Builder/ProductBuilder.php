@@ -12,5 +12,5 @@ use stdClass;
  */
 interface ProductBuilder
 {
-    function getProductInstance(stdClass $stdInstance): Product;
+    public function getProductInstance(stdClass $stdInstance): Product;
 }

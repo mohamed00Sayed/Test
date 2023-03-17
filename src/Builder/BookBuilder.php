@@ -7,7 +7,6 @@ namespace Moham\Test\Builder;
 use stdClass;
 use Moham\Test\Main\Book;
 
-
 class BookBuilder implements ProductBuilder
 {
     public function getProductInstance(stdClass $std): Book

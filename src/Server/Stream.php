@@ -65,7 +65,9 @@ class Stream implements StreamInterface
             return $new;
         }
 
-        throw new \InvalidArgumentException('First argument to Stream::create() must be a string, resource or StreamInterface.');
+        throw new \InvalidArgumentException(
+            'First argument to Stream::create() must be a string, resource or StreamInterface.'
+        );
     }
 
     public function __destruct()
@@ -186,7 +188,9 @@ class Stream implements StreamInterface
         }
 
         if (-1 === \fseek($this->stream, $offset, $whence)) {
-            throw new \RuntimeException('Unable to seek to stream position "' . $offset . '" with whence ' . \var_export($whence, true));
+            throw new \RuntimeException(
+                'Unable to seek to stream position "' . $offset . '" with whence ' . \var_export($whence, true)
+            );
         }
     }
 
